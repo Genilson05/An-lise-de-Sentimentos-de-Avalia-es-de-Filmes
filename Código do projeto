@@ -1,0 +1,37 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import nltk
+from nltk.sentiment import SentimentIntensityAnalyzer
+
+# Baixando o analisador de sentimentos do NLTK
+nltk.download('vader_lexicon')
+sia = SentimentIntensityAnalyzer()
+
+# Carregando dados fictícios
+data = {
+    'filme': ['Filme A', 'Filme B', 'Filme C', 'Filme D', 'Filme E'],
+    'avaliacao': [
+        "Amei esse filme! Muito emocionante e bem produzido.",
+        "Filme horrível, não recomendo para ninguém.",
+        "É um filme ok, tem seus momentos bons e ruins.",
+        "Maravilhoso! Uma experiência incrível.",
+        "Poderia ser melhor, mas não foi de todo ruim."
+    ]
+}
+df = pd.DataFrame(data)
+
+# Aplicando análise de sentimentos
+df['sentimento'] = df['avaliacao'].apply(lambda x: sia.polarity_scores(x)['compound'])
+
+# Criando um gráfico
+sns.barplot(x='filme', y='sentimento', data=df, palette='coolwarm')
+plt.axhline(0, color='black', linestyle='--')
+plt.title('Análise de Sentimentos das Avaliações dos Filmes')
+plt.ylabel('Score de Sentimento')
+plt.show()
+
+# Salvando os dados tratados
+df.to_csv('data/avaliacoes_tratadas.csv', index=False)
+
+print("Análise concluída! Veja o gráfico e o arquivo gerado.")
